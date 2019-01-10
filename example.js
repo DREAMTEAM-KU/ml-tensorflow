@@ -146,7 +146,7 @@ model.add(tf.layers.dropout({
 }));
 
 model.add(tf.layers.dense({
-  units: 20, // จำนวน node ของ output
+  units: 3, // จำนวน node ของ output
   kernelInitializer: 'VarianceScaling',
   activation: 'relu'
 }));

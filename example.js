@@ -7,6 +7,8 @@ const axios = require('axios');
 
 var csv = require("fast-csv");
 
+let url = 'http://tesatopgun.thitgorn.com/getSanam?hours='
+// let url = 'http://localhot/getSanam?hours='
 
 var xs = [];
 var ys = [];
@@ -81,7 +83,7 @@ async function reshape(data, slice_num) {
 }
 
 async function prepareData() {
-  await axios.get('http://tesatopgun.thitgorn.com/getSanam?hours=8000').then(res => {
+  await axios.get(url + '8000').then(res => {
     data = res.data.number_of_tourist
     console.log(res.data.number_of_tourist)
   }).catch(err => {
@@ -136,7 +138,7 @@ async function prepareData() {
 const model = tf.sequential();
 
 model.add(tf.layers.lstm({
-  units: 40, // จำนวน unit
+  units: 60, // จำนวน unit
   inputShape: [numFeature, 1], // จำนวน input และ output ที่ต้องการ
   returnSequences: false // ไม่ return ผลลัพธ์ในทุกๆโหนด
 }));
@@ -165,8 +167,8 @@ async function main() {
     const history = await model.fit(
       trainXS,
       trainYS, {
-        batchSize: 15, // จำนวน element ใน array ของ output
-        epochs: 500, // จำนวนรอบในกสรเทรน
+        batchSize: 8, // จำนวน element ใน array ของ output
+        epochs: 100, // จำนวนรอบในกสรเทรน
         shuffle: true, // สุ่มแบบเรียงหรือไม่เรียง true สุ่ม false ไม่สุ่ม
         validationSplit: 0.2 // แบ่งอัตราส่วนชุดข้อมูล test กับ train
       });
@@ -192,7 +194,7 @@ async function main() {
   // ]
   let x = []
 
-  await axios.get('http://tesatopgun.thitgorn.com/getSanam?hours=10').then(res => {
+  await axios.get(url + '10').then(res => {
     x = res.data.number_of_tourist
     console.log(res.data.number_of_tourist)
   }).catch(err => {

@@ -4,6 +4,14 @@ const tf = require('@tensorflow/tfjs');
 require('@tensorflow/tfjs-node');
 
 const axios = require('axios');
+
+const express = require('express')
+const app = express()
+const port = 4000
+
+let url = 'http://tesatopgun.thitgorn.com/getSanam?hours='
+// let url = 'http://localhot/getSanam?hours='
+
 let data = []
 
 let numFeature = 10
@@ -11,7 +19,7 @@ let numFeature = 10
 let MAX = -999;
 
 async function findMAX() {
-  await axios.get('http://tesatopgun.thitgorn.com/getSanam?hours=8000').then(res => {
+  await axios.get(url + '8000').then(res => {
     data = res.data.number_of_tourist
   }).catch(err => {
 
@@ -49,23 +57,21 @@ model.compile({
   metrics: ['accuracy'],
 });
 
-async function main() {
+const load = async () => {
+  const model = await tf.loadModel('file://model/model.json');
+};
+
+
+async function predict() {
   await findMAX()
-  const load = async () => {
-    const model = await tf.loadModel('file://model/model.json');
-  };
-
   await load();
-
   let x = []
-
-  await axios.get('http://tesatopgun.thitgorn.com/getSanam?hours=10').then(res => {
+  await axios.get(url + '10').then(res => {
     x = res.data.number_of_tourist
     console.log(res.data.number_of_tourist)
   }).catch(err => {
 
   })
-
   let xxx = tf.tensor1d(x);
   xxx = tf.reshape(xxx, [-1, numFeature, 1])
 
@@ -85,4 +91,14 @@ async function main() {
   return result
 }
 
-main();
+app.get("/predict", async (req, res) => {
+  // push block
+  let msg = await predict()
+  res.send(msg);
+});
+
+app.listen(port, () => {
+  console.log(`Server running at ${port}/`);
+});
+
+// main();

@@ -136,13 +136,13 @@ async function prepareData() {
 const model = tf.sequential();
 
 model.add(tf.layers.lstm({
-  units: 20, // จำนวน unit
+  units: 40, // จำนวน unit
   inputShape: [numFeature, 1], // จำนวน input และ output ที่ต้องการ
   returnSequences: false // ไม่ return ผลลัพธ์ในทุกๆโหนด
 }));
 
 model.add(tf.layers.dropout({
-  rate: 0.5
+  rate: 0.2
 }));
 
 model.add(tf.layers.dense({
@@ -151,7 +151,7 @@ model.add(tf.layers.dense({
   activation: 'relu'
 }));
 
-const LEARNING_RATE = 0.0001;
+const LEARNING_RATE = 0.001;
 const optimizer = tf.train.adam(LEARNING_RATE);
 
 model.compile({
@@ -165,8 +165,8 @@ async function main() {
     const history = await model.fit(
       trainXS,
       trainYS, {
-        batchSize: 35, // จำนวน element ใน array ของ output
-        epochs: 100, // จำนวนรอบในกสรเทรน
+        batchSize: 15, // จำนวน element ใน array ของ output
+        epochs: 500, // จำนวนรอบในกสรเทรน
         shuffle: true, // สุ่มแบบเรียงหรือไม่เรียง true สุ่ม false ไม่สุ่ม
         validationSplit: 0.2 // แบ่งอัตราส่วนชุดข้อมูล test กับ train
       });

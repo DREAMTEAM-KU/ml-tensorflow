@@ -3,9 +3,10 @@
 const tf = require('@tensorflow/tfjs');
 require('@tensorflow/tfjs-node');
 
-// const axios = require('axios');
+const axios = require('axios');
 
 var csv = require("fast-csv");
+
 
 var xs = [];
 var ys = [];
@@ -80,15 +81,19 @@ async function reshape(data, slice_num) {
 }
 
 async function prepareData() {
-  await readCSV('sanam.csv')
+  await axios.get('http://tesatopgun.thitgorn.com/getSanam?hours=8000').then(res => {
+    data = res.data.number_of_tourist
+    console.log(res.data.number_of_tourist)
+  }).catch(err => {
 
-  var newArr = [];
+  })
 
-  for (var i = 0; i < data.length; i++) {
-    newArr = newArr.concat(data[i]);
-  }
-
-  data = newArr
+  // await readCSV('sanam.csv')
+  // var newArr = [];
+  // for (var i = 0; i < data.length; i++) {
+  //   newArr = newArr.concat(data[i]);
+  // }
+  // data = newArr
 
   const len = data.length
   console.log('data.length: ' + data.length);
@@ -124,7 +129,7 @@ async function prepareData() {
   // ys = reshape(dataset, numFeature)
 
   // console.log(xs);
-  console.log(ys);
+  // console.log(ys);
 
 }
 
@@ -141,7 +146,7 @@ model.add(tf.layers.dropout({
 }));
 
 model.add(tf.layers.dense({
-  units: 3, // จำนวน node ของ output
+  units: 20, // จำนวน node ของ output
   kernelInitializer: 'VarianceScaling',
   activation: 'relu'
 }));
@@ -182,9 +187,18 @@ async function main() {
 
   await load();
 
-  let x = [
-    0, 0, 0, 0.04164353137, 0.03609106052, 0.03275957801, 0.04664075514, 0.1271515825, 0.05441421433, 0.3997779012
-  ]
+  // let x = [
+  //   0, 0, 0, 0.04164353137, 0.03609106052, 0.03275957801, 0.04664075514, 0.1271515825, 0.05441421433, 0.3997779012
+  // ]
+  let x = []
+
+  await axios.get('http://tesatopgun.thitgorn.com/getSanam?hours=10').then(res => {
+    x = res.data.number_of_tourist
+    console.log(res.data.number_of_tourist)
+  }).catch(err => {
+
+  })
+
   let xxx = tf.tensor1d(x);
   xxx = tf.reshape(xxx, [-1, numFeature, 1])
 

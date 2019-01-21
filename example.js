@@ -138,7 +138,7 @@ async function prepareData() {
 const model = tf.sequential();
 
 model.add(tf.layers.lstm({
-  units: 60, // จำนวน unit
+  units: 10, // จำนวน unit
   inputShape: [numFeature, 1], // จำนวน input และ output ที่ต้องการ
   returnSequences: false // ไม่ return ผลลัพธ์ในทุกๆโหนด
 }));
@@ -167,8 +167,8 @@ async function main() {
     const history = await model.fit(
       trainXS,
       trainYS, {
-        batchSize: 8, // จำนวน element ใน array ของ output
-        epochs: 100, // จำนวนรอบในกสรเทรน
+        batchSize: 20, // จำนวน element ใน array ของ output
+        epochs: 15, // จำนวนรอบในกสรเทรน
         shuffle: true, // สุ่มแบบเรียงหรือไม่เรียง true สุ่ม false ไม่สุ่ม
         validationSplit: 0.2 // แบ่งอัตราส่วนชุดข้อมูล test กับ train
       });
